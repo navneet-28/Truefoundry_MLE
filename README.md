@@ -41,22 +41,24 @@ Imagine a flow where after writing the code — you can call a genie and tell ab
 
 with body as
 
-****{
+```
+{
 
-`    `"hf_pipeline": string,
+    "hf_pipeline": string,
 
-`    `"model_deployed_url": string,
+    "model_deployed_url": string,
 
-`    `"inputs": any,
+    "inputs": any,
 
-`    `"parameters": {...}
+    "parameters": {...}
 
 }
 
-****
+```
+
 where:
 
-- hf_pipeline is the huggingface pipeline name like _text-classification_
+- hf*pipeline is the huggingface pipeline name like \_text-classification*
 - model_deployed_url is the deployed endpoint of the hugging face model (that you will paste from truefoundry’s dashboard)
 - inputs and parameters vary according to hf_pipeline - You can find the inference API format of hugging face here:
 
@@ -70,21 +72,23 @@ where:
 
 Input Format for your service: <https://huggingface.co/docs/inference-endpoints/supported_tasks#text-generation>
 
-{
+```
+{
 
-`    `"hf_pipeline": "text-generation",
+    "hf_pipeline": "text-generation",
 
-`    `"model_deployed_url": string,
+    "model_deployed_url": string,
 
-`    `"inputs": string,
+    "inputs": string,
 
-`    `"parameters": {
+    "parameters": {
 
-`         `// ... Any keyword arguments accepted by text-generation
+         // ... Any keyword arguments accepted by text-generation
 
-`     `}
+     }
 
 }
+```
 
 
 
@@ -92,69 +96,72 @@ Input Format for your service: <https://huggingface.co/docs/inference-endpoints/
 
 Input Format for your service: [https://huggingface.co/docs/inference-endpoints/supported_tasks#zero-shot-classification]()
 
-{
+```
+{
 
-`    `"hf_pipeline": "zero-shot-classification",
+    "hf_pipeline": "zero-shot-classification",
 
-`    `"model_deployed_url": string,
+    "model_deployed_url": string,
 
-`    `"inputs": string,
+    "inputs": string,
 
-`    `"parameters": {
+    "parameters": {
 
-`         `candidate_labels: string[],
+         candidate_labels: string[],
 
-`         `// ... Any keyword arguments accepted by zero-shot-classification
+         // ... Any keyword arguments accepted by zero-shot-classification
 
-`     `}
+     }
 
 }
 
-
+```
 
 1. [d4data/biomedical-ner-all](https://huggingface.co/d4data/biomedical-ner-all/tree/main) [token-classification]
 
 Input Format for your service: [https://huggingface.co/docs/inference-endpoints/supported_tasks#token-classifiation](h)
 
-{
+```
+{
 
-`    `"hf_pipeline": "token-classification",
+    "hf_pipeline": "token-classification",
 
-`    `"model_deployed_url": string,
+    "model_deployed_url": string,
 
-`    `"inputs": string,
+    "inputs": string,
 
-`    `"parameters": {
+    "parameters": {
 
-`         `// ... Any keyword arguments accepted by token-classification
+         `// ... Any keyword arguments accepted by token-classification
 
-`     `}
+     }
 
 }
 
-
+```
 
 1. [TahaDouaji/detr-doc-table-detection](h) [object-detection]
 
 Input Format for your service: <https://huggingface.co/docs/inference-endpoints/supported_tasks#object-detection>
 
-{
+```
+{
 
-`    `"hf_pipeline": "object-detection",
+    "hf_pipeline": "object-detection",
 
-`    `"model_deployed_url": string,
+    "model_deployed_url": string,
 
-`    `"inputs": string, // http url to image OR base64 encoded image bytes
+    "inputs": string, // http url to image OR base64 encoded image bytes
 
-`    `"parameters": {
+    "parameters": {
 
-`         `// ... Any keyword arguments accepted by object-detection
+         // ... Any keyword arguments accepted by object-detection
 
-`     `}
+     }
 
 }
 
-
+```
 
 - The model deployment on truefoundry uses seldon’s mlserver in the background. To understand the input format for each pipeline, you can refer to this file: [https://github.com/SeldonIO/MLServer/blob/master/runtimes/huggingface/mlserver_huggingface/metadata.py](h)
 
@@ -170,13 +177,11 @@ Input Format for your service: <https://huggingface.co/docs/inference-endpoints/
 
 For the host value in port section follow this format
 
-https://<your-app-name>-<workspace-name>-<port>.demo1.truefoundry.com
-
-
+https://<your-app-name>-<workspace-name>-<port>.demo1.truefoundry.com
 
 The New Service form on UI can help you generate this value
 
-`	`**References**
+**References**
 
 **[1] Getting Access to Truefoundry’s Platform:**
 
@@ -199,29 +204,29 @@ Get access to <https://app.truefoundry.com> and resources by joining our slack c
 
 For text-generation, token-classification, zero-shot-classification
 
-resources:
-`  `cpu_limit: 0.1
-`  `cpu_request: 0.1
+```
+resources:
+  cpu_limit: 0.1
+  cpu_request: 0.1
+  memory_request: 850
+  memory_limit: 900
+  ephemeral_storage_limit: 1000
+  ephemeral_storage_request: 1000
 
-`  `memory_request: 850
-`  `memory_limit: 900
-`  `ephemeral_storage_limit: 1000
-`  `ephemeral_storage_request: 1000
-
-
+```
 
 For object-detection model
 
-resources:
-`  `cpu_limit: 0.1
-`  `cpu_request: 0.1
+```
+resources:
+  cpu_limit: 0.1
+  cpu_request: 0.1
+  memory_request: 1300
+  memory_limit: 1500
+  ephemeral_storage_limit: 1000
+  ephemeral_storage_request: 1000
 
-`  `memory_request: 1300
-`  `memory_limit: 1500
-`  `ephemeral_storage_limit: 1000
-`  `ephemeral_storage_request: 1000
-
-
+```
 
 - Your model should be live in a few minutes
 - Reference Link: <https://docs.truefoundry.com/docs/model-deployment-1#huggingfacemodelhub>
