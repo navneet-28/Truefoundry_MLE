@@ -6,10 +6,10 @@ import json
 import requests
 
 TASK_TO_URL = {
-    "object-detection": "https://test-object-detect-nikhil-ws.tfy-ctl-euwe1-devtest.devtest.truefoundry.tech/v2/models/test-object-detect/infer",
-    "text-generation": "https://text-model-test-intern-navneet.demo1.truefoundry.com/v2/models/text-model-test/infer",
-    "token-classification": "https://test-token-classn-intern-navneet.demo1.truefoundry.com/v2/models/test-token-classn/infer",
+    "text-generation": "https://text-generation-ml-intern-assign.tfy-gcp-standard-usce1.devtest.truefoundry.tech/v2/models/text-generation/infer",
+    "token-classification": "https://token-class-ml-intern-assign.tfy-gcp-standard-usce1.devtest.truefoundry.tech/v2/models/token-class/infer",
     "zero-shot-classification": "https://test-zero-shot-intern-navneet.demo1.truefoundry.com/v2/models/test-zero-shot/infer",
+    "object-detection": "https://test-object-detect-nikhil-ws.tfy-ctl-euwe1-devtest.devtest.truefoundry.tech/v2/models/test-object-detect/infer",
 }
 
 
@@ -68,12 +68,14 @@ class TestTranslator(unittest.TestCase):
         # print(output)
         output = output["outputs"][0]["data"][0]
         # convert output to json
-        output = json.loads(output)
+        # output = json.loads(output)
         # self.assertEqual(len(output), 1)
         # self.assertEqual(len(output[0]), 5)
         # for item in output[0]:
         #     self.assertIn("generated_text", item)
-        # print(output)
+        print("Text Generation:\n")
+        print(output)
+        print("\n")
 
     def test_token_classification(self):
         """Test token-classification
@@ -98,7 +100,9 @@ class TestTranslator(unittest.TestCase):
         # self.assertGreater(len(output), 0)
         # for item in output:
         #     self.assertIn("entity", item)
-        # print(output)
+        print("Token Classification:\n")
+        print(output)
+        print("\n")
 
     def test_zero_shot_classification(self):
         """Test zero-shot-classification
@@ -123,7 +127,9 @@ class TestTranslator(unittest.TestCase):
         response.raise_for_status()
         output = response.json()
         output = output["outputs"][0]["data"][0]
+        print("Zero Shot Classification:\n")
         print(output)
+        print("\n")
 
     def test_object_detection_with_url(self):
         """Test object-detection with URL
@@ -152,6 +158,9 @@ class TestTranslator(unittest.TestCase):
         # self.assertIn("label", output[0][0])
         # self.assertIn("box", output[0][0])
         # self.assertEqual(len(output[0][0]["box"]), 4)
+        print("Object Detection with url:\n")
+        print(output)
+        print("\n")
 
     def test_object_detection_as_bytes(self):
         """Test object-detection with Image bytes
@@ -171,6 +180,7 @@ class TestTranslator(unittest.TestCase):
         )
         image_response.raise_for_status()
         image = base64.b64encode(image_response.content).decode("ascii")
+        # print(image)
         payload = {
             "hf_pipeline": "object-detection",
             "model_deployed_url": TASK_TO_URL["object-detection"],
@@ -185,6 +195,9 @@ class TestTranslator(unittest.TestCase):
         # self.assertIn("label", output[0][0])
         # self.assertIn("box", output[0][0])
         # self.assertEqual(len(output[0][0]["box"]), 4)
+        print("Object Detection with bytes:\n")
+        print(output)
+        print("\n")
 
 
 if __name__ == "__main__":

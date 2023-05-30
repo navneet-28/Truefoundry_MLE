@@ -14,10 +14,8 @@ class PredictRequest(BaseModel):
     parameters: Dict[str, Any] = Field(default_factory=dict)
 
 
-# headers = {"Authorization": "Bearer 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"}
 @app.post(path="/predict")
 async def predict(request: Request):
-    # Write your code here to translate input into V2 protocol and send it to model_deployed_url
     try:
         data = await request.json()
         hf_pipeline = data.get("hf_pipeline")
@@ -25,10 +23,6 @@ async def predict(request: Request):
         inputs = data.get("inputs")
         parameters = data.get("parameters")
 
-        # if hf_pipeline == "zero-shot-classification":
-        #     candidate_labels = parameters.get("candidate_labels")
-
-        # perform input validation and handle errors
         if not hf_pipeline:
             raise ValueError("hf_pipeline is required")
         if not model_deployed_url:
@@ -38,11 +32,9 @@ async def predict(request: Request):
 
         if hf_pipeline == "zero-shot-classification":
             candidate_labels = parameters.get("candidate_labels")
-            print(candidate_labels)
-            # convert candidate_labels from list to json array
             cl = json.dumps(candidate_labels)
             # cl = json.loads(cl)
-            print(cl)
+            # print(cl)
             payload = {
                 "id": "string",
                 "parameters": {"content_type": "string", "headers": {}},
@@ -55,9 +47,9 @@ async def predict(request: Request):
                     },
                     {
                         "name": "candidate_labels",
-                        "shape": [1],
+                        "shape": [-1],
                         "datatype": "BYTES",
-                        "data": [json.loads(cl)],
+                        "data": [cl],
                     },
                 ],
                 "outputs": [],
@@ -82,7 +74,22 @@ async def predict(request: Request):
                 "parameters": parameters,
             }
         elif hf_pipeline == "object-detection":
-            payload = {"inputs": inputs, "parameters": parameters}
+            print(inputs)
+            payload = {
+                "id": "string",
+                "parameters": parameters,
+                "inputs": [
+                    {
+                        "name": "inputs",
+                        "shape": [-1],
+                        "datatype": "BYTES",
+                        "data": [
+                            "https://www.w3.org/WAI/WCAG22/Techniques/pdf/img/table-word.jpg"
+                        ],
+                    }
+                ],
+                "outputs": [],
+            }
         elif hf_pipeline == "token-classification":
             payload = {
                 "id": "string",
@@ -102,15 +109,10 @@ async def predict(request: Request):
                     }
                 ],
             }
-            # payload = {
-            #     "inputs": inputs,
-            #     "parameters": parameters
 
-            # }
         else:
             raise ValueError("hf_pipeline not supported")
 
-        # Invoke huggingFace model using model_deployed_url and converted payload
         async with httpx.AsyncClient() as client:
             response = await client.post(model_deployed_url, json=payload)
             response.raise_for_status()
